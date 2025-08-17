@@ -1,0 +1,13 @@
+# Ignore all
+**
+
+# Exclude
+!uv.lock
+!pyproject.toml
+!.python-version
+
+!app/main.py
+!core/
+!app/
+!docker/
+!templates/

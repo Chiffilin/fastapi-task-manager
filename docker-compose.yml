@@ -1,0 +1,19 @@
+services:
+
+  db:
+    image: postgres:15-alpine
+    container_name: fastapi_demo_db
+    env_file:
+      - .env
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "7000:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data:rw
+
+volumes:
+  postgres_data:

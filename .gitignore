@@ -171,6 +171,10 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+#just
+just
+justfile
+*.just
 
 .idea/git_toolbox_prj.xml
 
