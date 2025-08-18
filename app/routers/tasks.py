@@ -1,14 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from typing import List
+from typing import List, Optional
 
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.crud.tasks import (
     create_task,
+    delete_task,
     get_task_by_id,
     get_tasks,
     update_task,
-    delete_task,
 )
 from app.db.database import get_db
 from app.schemas.taskbase import TaskCreate, TaskOut, TaskUpdate
@@ -39,11 +39,11 @@ def read_task_by_id(task_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model=List[TaskOut])
-def read_all_tasks(db: Session = Depends(get_db)):
+def read_all_tasks(db: Session = Depends(get_db), completed: Optional[bool] = None):
     """
     Retrieves a list of all tasks.
     """
-    return get_tasks(db)
+    return get_tasks(db, completed=completed)
 
 
 @router.put("/{task_id}", response_model=TaskOut)

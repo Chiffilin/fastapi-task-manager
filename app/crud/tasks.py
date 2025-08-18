@@ -1,3 +1,5 @@
+from typing import Optional
+
 from sqlalchemy.orm import Session
 
 from app.models.task_model import Task
@@ -30,17 +32,22 @@ def create_task(db: Session, task: TaskCreate):
     return db_task
 
 
-def get_tasks(db: Session):
+def get_tasks(db: Session, completed: Optional[bool] = None):
     """
     Retrieves all tasks from the database.
 
     Args:
         db: The SQLAlchemy session object.
+        completed: Optional filter to retrieve only completed or uncompleted tasks.
 
     Returns:
         A list of task objects.
     """
-    return db.query(Task).all()
+    query = db.query(Task)
+    print(f"Received filter for completed: {completed}")
+    if completed is not None:
+        query = query.filter(Task.completed == completed)
+    return query.all()
 
 
 def get_task_by_id(task_id: int, db: Session):
