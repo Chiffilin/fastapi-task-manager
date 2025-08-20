@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
+
 from sqlalchemy.orm import Session
 
 from app.crud.tasks import (
@@ -34,7 +35,9 @@ def read_task_by_id(task_id: int, db: Session = Depends(get_db)):
     """
     db_task = get_task_by_id(db=db, task_id=task_id)
     if db_task is None:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Task not found"
+        )
     return db_task
 
 
@@ -53,7 +56,9 @@ def update_existing_task(task_id: int, task: TaskUpdate, db: Session = Depends(g
     """
     db_task = update_task(task_id=task_id, task_data=task, db=db)
     if db_task is None:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Task not found"
+        )
     return db_task
 
 
@@ -64,5 +69,7 @@ def delete_existing_task(task_id: int, db: Session = Depends(get_db)):
     """
     db_task = delete_task(task_id=task_id, db=db)
     if db_task is None:
-        raise HTTPException(status_code=404, detail="Task not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Task not found"
+        )
     return
