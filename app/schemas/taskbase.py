@@ -1,11 +1,11 @@
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class TaskBase(BaseModel):
-    title: str
-    description: str | None = None
+    title: str = Field(min_length=1, max_length=100)
+    description: Optional[str] = Field(None, max_length=500)
     completed: bool = False
 
     model_config = ConfigDict(from_attributes=True)
@@ -24,8 +24,8 @@ class TaskCreate(TaskBase):
 
 class TaskUpdate(TaskBase):
     class TaskUpdate(BaseModel):
-        title: Optional[str] = None
-        description: Optional[str] = None
+        title: Optional[str] = Field(None, min_length=1, max_length=100)
+        description: Optional[str] = Field(None, max_length=500)
         completed: Optional[bool] = None
 
 

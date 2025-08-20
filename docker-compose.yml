@@ -1,4 +1,14 @@
 services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
 
   db:
     image: postgres:15-alpine
@@ -11,7 +21,7 @@ services:
       timeout: 5s
       retries: 5
     ports:
-      - "7000:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data:rw
 
