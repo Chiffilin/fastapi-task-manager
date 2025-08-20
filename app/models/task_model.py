@@ -1,6 +1,7 @@
 from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy.orm import declarative_base
 
-from app.db.database import Base
+Base = declarative_base()
 
 
 class Task(Base):

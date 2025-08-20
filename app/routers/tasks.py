@@ -1,9 +1,10 @@
+# app/routers/tasks.py
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from sqlalchemy.orm import Session
-
+# It's assumed the crud functions are also async
 from app.crud.tasks import (
     create_task,
     delete_task,
@@ -11,29 +12,29 @@ from app.crud.tasks import (
     get_tasks,
     update_task,
 )
-from app.db.database import get_db
+from app.db.database import get_db_session
 from app.schemas.taskbase import TaskCreate, TaskOut, TaskUpdate
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
 
 @router.post("/", response_model=TaskOut, status_code=status.HTTP_201_CREATED)
-def create_new_task(task: TaskCreate, db: Session = Depends(get_db)):
+async def create_new_task(task: TaskCreate, db: AsyncSession = Depends(get_db_session)):
     """
     Creates a new task.
     """
-    return create_task(db=db, task=task)
+    return await create_task(db=db, task=task)
 
 
 @router.get("/{task_id}", response_model=TaskOut)
-def read_task_by_id(task_id: int, db: Session = Depends(get_db)):
+async def read_task_by_id(task_id: int, db: AsyncSession = Depends(get_db_session)):
     """
     Retrieves a single task by its ID.
     :param task_id: The ID of the task.
-    :param db: The DB session object.
+    :param db: The asynchronous DB session object.
     :return: The task object.
     """
-    db_task = get_task_by_id(db=db, task_id=task_id)
+    db_task = await get_task_by_id(db=db, task_id=task_id)
     if db_task is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Task not found"
@@ -42,19 +43,23 @@ def read_task_by_id(task_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model=List[TaskOut])
-def read_all_tasks(db: Session = Depends(get_db), completed: Optional[bool] = None):
+async def read_all_tasks(
+    db: AsyncSession = Depends(get_db_session), completed: Optional[bool] = None
+):
     """
     Retrieves a list of all tasks.
     """
-    return get_tasks(db, completed=completed)
+    return await get_tasks(db, completed=completed)
 
 
 @router.put("/{task_id}", response_model=TaskOut)
-def update_existing_task(task_id: int, task: TaskUpdate, db: Session = Depends(get_db)):
+async def update_existing_task(
+    task_id: int, task: TaskUpdate, db: AsyncSession = Depends(get_db_session)
+):
     """
     Updates an existing task by its ID.
     """
-    db_task = update_task(task_id=task_id, task_data=task, db=db)
+    db_task = await update_task(task_id=task_id, task_data=task, db=db)
     if db_task is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Task not found"
@@ -63,11 +68,13 @@ def update_existing_task(task_id: int, task: TaskUpdate, db: Session = Depends(g
 
 
 @router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_existing_task(task_id: int, db: Session = Depends(get_db)):
+async def delete_existing_task(
+    task_id: int, db: AsyncSession = Depends(get_db_session)
+):
     """
     Deletes a task by its ID.
     """
-    db_task = delete_task(task_id=task_id, db=db)
+    db_task = await delete_task(task_id=task_id, db=db)
     if db_task is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Task not found"

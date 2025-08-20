@@ -47,5 +47,5 @@ RUN chmod -R +x ${VENV_DIR}/bin
 ENV PATH="${VENV_DIR}/bin:$PATH"
 
 # Використовуємо sh -c для більш надійного запуску
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port 8000"]
+#CMD ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "app.main:app", "--bind", "0.0.0.0:8000"]
 # [stage__final]-[END]==================================================

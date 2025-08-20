@@ -4,29 +4,28 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.db.database import create_tables, engine
+# Удаляем импорт create_tables, т.к. миграция будет выполняться отдельно
+from app.db.database import engine
 
-# Import the router
+# Импортируем роутер
 from app.routers.tasks import router
 
 
-# Asynchronous context manager to handle application lifespan events
+# Асинхронный контекстный менеджер для обработки событий жизненного цикла приложения
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """
-    Handles application lifecycle events.
-    Executes on startup and shutdown.
+    Обрабатывает события жизненного цикла приложения.
+    Выполняется при запуске и завершении работы.
     """
-    # Actions on startup
-    print("Creating tables...")
-    create_tables()
+    # Действия при запуске (теперь без создания таблиц)
     yield
-    # Actions on shutdown
-    print("Closing database connection...")
+    # Действия при завершении работы
+    print("Закрытие подключения к базе данных...")
     engine.dispose()
 
 
 app = FastAPI(lifespan=lifespan)
 
-# Include the router
+# Включаем роутер
 app.include_router(router)

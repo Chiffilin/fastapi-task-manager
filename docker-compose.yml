@@ -1,14 +1,22 @@
+version: '3.8'
+
 services:
+  # Сервис для вашего приложения FastAPI
   web:
     build: .
     ports:
       - "8000:8000"
+    # Теперь web-сервис зависит от успешного завершения миграции
     depends_on:
-      - db
+      migrate:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
     env_file:
       - .env
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    command: gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app --bind 0.0.0.0:8000
 
   db:
     image: postgres:15-alpine
@@ -24,6 +32,19 @@ services:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data:rw
+
+  # НОВЫЙ СЕРВИС: Запускает миграцию базы данных один раз
+  migrate:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    # Команда для запуска миграции, используя синхронную функцию
+    command: [ "python", "-c", "from app.db.database import create_tables_sync; create_tables_sync()" ]
 
 volumes:
   postgres_data:
