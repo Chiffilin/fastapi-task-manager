@@ -1,16 +1,38 @@
 [project]
-name = "task-manager-api"
+name = "fastapi-task-manager"
 version = "0.1.0"
-description = "Add your description here"
+description = "A modern FastAPI task management system with PostgreSQL"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.11"
 dependencies = [
-    "asyncpg>=0.30.0",
-    "fastapi>=0.116.1",
-    "gunicorn>=23.0.0",
-    "psycopg2-binary>=2.9.10",
-    "pydantic>=2.11.7",
-    "python-dotenv>=1.1.1",
-    "sqlalchemy>=2.0.43",
-    "uvicorn>=0.35.0",
+    "fastapi>=0.104.1",
+    "uvicorn[standard]>=0.24.0",
+    "sqlalchemy>=2.0.23",
+    "psycopg2-binary>=2.9.9",
+    "python-dotenv>=1.0.0",
+    "alembic>=1.12.1",
+    "pydantic-settings>=2.1.0",
 ]
+
+[build-system]
+requires = ["setuptools>=65.5.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# ПРАВИЛЬНЫЙ формат для UV dev-dependencies
+[tool.uv]
+dev-dependencies = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "httpx>=0.25.0",
+    "black>=23.10.0",
+    "isort>=5.12.0",
+    "mypy>=1.6.0",
+    "flake8>=6.1.0",
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+
+[tool.isort]
+profile = "black"
