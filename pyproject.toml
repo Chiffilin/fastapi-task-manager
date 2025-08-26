@@ -18,7 +18,14 @@ dependencies = [
 requires = ["setuptools>=65.5.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
-# ПРАВИЛЬНЫЙ формат для UV dev-dependencies
+# Добавляем эту секцию для исправления ошибки
+[tool.setuptools]
+# Вариант 1: Явное указание пакетов
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]
+exclude = ["tests*", "scripts*", "just*"]
+
 [tool.uv]
 dev-dependencies = [
     "pytest>=7.4.0",
@@ -28,6 +35,8 @@ dev-dependencies = [
     "isort>=5.12.0",
     "mypy>=1.6.0",
     "flake8>=6.1.0",
+    "sqlalchemy-utils>=0.41.2",
+    "python-multipart>=0.0.20",
 ]
 
 [tool.black]
@@ -36,3 +45,13 @@ target-version = ['py311']
 
 [tool.isort]
 profile = "black"
+
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
+
+[tool.taskipy.tasks]
+test = "pytest -x"
+test-cov = "pytest --cov=app --cov-report=html"
+test-fast = "pytest -x --tb=no -q"

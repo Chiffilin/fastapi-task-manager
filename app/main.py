@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from app.db.database import create_tables, engine
 
 # Import the router
-from app.routers.tasks import router
+from app.api.routers.tasks import router
 
 
 # Asynchronous context manager to handle application lifespan events
