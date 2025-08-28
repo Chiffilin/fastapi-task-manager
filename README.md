@@ -4,7 +4,7 @@
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.104-green)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue)
 ![Docker](https://img.shields.io/badge/Docker-✓-blue)
-![Tests](https://github.com/Сhiffilin/fastapi-task-manager/actions/workflows/test.yml/badge.svg)
+![Tests](https://img.shields.io/badge/Tests-Passing-green)
 ![Coverage](https://codecov.io/gh/your-username/fastapi-task-manager/branch/main/graph/badge.svg)
 
 A modern, production-ready Task Management API built with FastAPI, PostgreSQL, and Docker.
